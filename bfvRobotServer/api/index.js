@@ -30,7 +30,6 @@ router.post('/initServer', async (req,res) =>{
 router.get('/getServers', async(req, res)=>{
   let { servers } = await axiosRequest.getServers({ name: '[BFV ROBOT]', limit: 100 })
   let result = await knex.select('*').from('server').innerJoin('server_group', 'server.groupId', 'server_group.groupId')
-  console.log(result)
   result = result.filter(item => item.isValid == 1)
   servers = servers.map(item => {
     const robotServer = result.find(i => i.serverName == item.prefix) || {}
@@ -48,7 +47,8 @@ router.get('/getServers', async(req, res)=>{
 // 机器人服务器验证
 router.get('/serverValid', async (req, res)=> {
   const { serverName, code, gameAdminPid } = req.query
-  const servers = await knex('server').select().where({ gameAdminPid, code, serverName })
+  const servers = await knex('server').select().where({ gameAdminPid, code, serverName, isValid: 1, ban: 0 })
+  console.log(servers)
   if(servers.length) {
     res.send({
       status: 1,
@@ -82,7 +82,6 @@ router.post('/createdUser', async (req, res) => {
         })
       }else {
         const user = await knex('user').insert({ name, password, qq })
-        console.log(user)
         const groupId = await knex('server_group').insert({ shortName, qqGroup, userId: user[0] })
         await knex('server').where({ code }).update({ groupId: groupId[0]})
         res.send({
@@ -103,7 +102,6 @@ router.post('/createdUser', async (req, res) => {
 router.post('/validServer', async (req, res) => {
   const { serverId, serverName = '' } = req.query
   const result = await knex('server').where({ serverId }).orWhere({ serverName }).update({ isValid: 1})
-  console.log(result)
   res.send({
     status: 1,
     message: 'successful'
