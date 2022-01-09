@@ -1,0 +1,14 @@
+export default {
+  mysql: {
+    host     : '',
+    port     : '',
+    user     : '',
+    password : '',
+    database : ''
+  },
+  port: '8080',
+  address: true ? '127.0.0.1' : '0.0.0.0',
+  axiosApi: {
+    gametools: 'https://api.gametools.network/bfv/'
+  }
+}
