@@ -108,6 +108,18 @@ router.post('/validServer', async (req, res) => {
   })
 })
 
+// 登录
+router.post('/login', async (req, res) => {
+  const { name, password } = req
+  // const resulte = await knex('server').select().where({ password }).andWhere({ name }).orWhere()
+  console.log(resulte)
+  res.send({
+    status: 1,
+    message: 'successful',
+    data: { name, password }
+  })
+})
+
 export default router
 
 
