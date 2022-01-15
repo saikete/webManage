@@ -1,0 +1,29 @@
+.ui-dialog {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+.ui-dialog .content {
+  background: #FFFFFF;
+  border-radius: 8px;
+  width: 782px;
+  overflow: hidden;
+}
+.ui-dialog .content .slotBox {
+  padding: 26px 51px 51px;
+  max-height: 80vh;
+}
+.ui-dialog .buttonBox {
+  display: flex;
+  justify-content: center;
+  height: 76px;
+  align-items: center;
+  background: #EEEEF6;
+}
+.ui-dialog .buttonBox .cancel {
+  margin-right: 10px;
+}

@@ -1,10 +1,15 @@
-import { createStore } from 'vuex'
+import Vue from 'vue'
+import Vuex from 'vuex'
+import mutations from './mutations'
 import actions from './actions'
-const store = createStore({
-  state:{//存放状态
-    
-  },
-  actions
-})
+import getters from './getters'
+import state from './getters'
+// import { phType } from '@/config/env'
+Vue.use(Vuex)
 
-export default store
+export default new Vuex.Store({
+  state,
+  getters,
+  actions,
+  mutations
+})

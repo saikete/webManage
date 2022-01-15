@@ -1,0 +1,68 @@
+@font-face {
+  font-family: "ray";
+  font-weight: normal;
+  font-style: normal;
+  src: url("https://dolphin-miniproject.oss-cn-beijing.aliyuncs.com/dolphinCare/font/ray.ttf") format("truetype");
+}
+.ui-icon .icon {
+  width: 100%;
+  height: 100%;
+}
+.icon {
+  font-family: "ray";
+}
+.icon-user:before {
+  content: "\e845";
+}
+.icon-password::before {
+  content: "\e87a";
+}
+.icon-eye:before {
+  content: '\e87b';
+}
+.icon-closeEye:before {
+  content: '\e87c';
+}
+.icon-infor:before {
+  content: '\e82d';
+}
+/* 搜索图标 */
+.icon-search:before {
+  content: "\e81a";
+}
+/* 实心勾图标 */
+.icon-success:before {
+  content: "\e809";
+}
+/* 箭头图标 */
+.icon-arrow:before {
+  content: "\e800";
+}
+/* 箭头图标 */
+.icon-clock:before {
+  content: "\e89e";
+}
+/* 历史 */
+.icon-history:before {
+  content: "\e862";
+}
+/* 通知 */
+.icon-notice:before {
+  content: "\e834";
+}
+/* 加号 */
+.icon-add:before {
+  content: "\e806";
+}
+/* 减号 */
+.icon-minus:before {
+  content: "\e807";
+}
+/* 图片 */
+.icon-image:before {
+  content: "\e874";
+}
+/* 长箭头 */
+.icon-arrow-up:before {
+  content: "\e80d";
+}
