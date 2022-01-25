@@ -1,13 +1,13 @@
 <template>
   <div class="login">
     <div>
-      <a-tabs default-active-key="1">
+      <a-tabs default-active-key="1" @change="tabChange">
         <a-tab-pane key="1" tab="注册">
         </a-tab-pane>
         <a-tab-pane key="2" tab="登录" force-render>
         </a-tab-pane>
       </a-tabs>
-      <div class="from">
+      <div class="from" v-if="tabAction == '1'">
         <div class="fromItem">
           <div class="label">
             服务器名称
@@ -69,11 +69,32 @@
             服务器介绍
           </div>
           <div>
-            <a-textarea placeholder="请输入服务器介绍" type="password" :auto-size="{ minRows: 3, maxRows: 10 }" />
+            <a-textarea placeholder="请输入服务器介绍" type="password" :auto-size="{ minRows: 3, maxRows: 10 }" size="large" />
           </div>
         </div>
         <a-button type="primary">
           注册
+        </a-button>
+      </div>
+      <div class="from" v-else>
+        <div class="fromItem">
+          <div class="label">
+            用户名/qq
+          </div>
+          <div>
+            <a-input placeholder="请输入用户名/qq" size="large" />
+          </div>
+        </div>
+        <div class="fromItem">
+          <div class="label">
+            密码
+          </div>
+          <div>
+            <a-input placeholder="请输入密码" type="password" size="large" />
+          </div>
+        </div>
+        <a-button type="primary">
+          登录
         </a-button>
       </div>
     </div>
@@ -82,7 +103,17 @@
 
 <script>
 export default {
-
+  data() {
+    return {
+      tabAction: '1'
+    }
+  },
+  methods: {
+    tabChange(e) {
+      console.log(e)
+      this.tabAction = e
+    }
+  },
 }
 </script>
 

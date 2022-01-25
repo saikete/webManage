@@ -14,6 +14,7 @@
           <span>地区：{{infor.region}}</span>
           <span>异常玩家：5</span>
         </p>
+        <p>目前查询玩家列表数量暂时不稳定，查询bfban的状态暂时不开放</p>
       </div>
       <div class="allMaps">
         <a-card-grid style="width: calc(100% / 8); text-align:center; padding: 5px" :hoverable="false" v-for="(item, index) in infor.rotation" :key="index + item.mapname + item.mode">
@@ -88,8 +89,8 @@ export default {
         const platoonText = platoon ? `[${platoon}]` : ''
         let name = `${platoonText}${item.name}`
         const { hh, ss } = getNowTime(join_time)
-        const { status } = teamOne[index] || {}
-        return { ...item, name, time: `${fillInStr(hh)}:${fillInStr(ss)}`, status}
+        const { hacker } = teamOne[index] || {}
+        return { ...item, name, time: `${fillInStr(hh)}:${fillInStr(ss)}`, status: hacker}
       })
     },
     teamTwo() {
@@ -101,7 +102,7 @@ export default {
         let name = `${platoonText}${item.name}`
         const { hh, ss } = getNowTime(join_time)
         const { status } = teamTwo[index] || {}
-        return { ...item, name, time: `${fillInStr(hh)}:${fillInStr(ss)}`, status}
+        return { ...item, name, time: `${fillInStr(hh)}:${fillInStr(ss)}`, status: hacker}
       })
     }
   },
