@@ -37,14 +37,14 @@
         <div class="title">team1</div>
         <a-table :columns="columns" :data-source="teamOne" :pagination="false">
           <a slot="name" slot-scope="text, item" @click="checkPlayer(item)"><span class="name">{{ text }}</span></a>
-          <span slot="status" slot-scope="status" :style="{ color: status ? 'red' : 'rgba(0, 0, 0, 0.65)' }">{{status ? '实锤' : '无异常' }}</span>
+          <span slot="status" slot-scope="status" :style="{ color: status ? 'red' : 'rgba(0, 0, 0, 0.65)' }">{{status ? '实锤' : '' }}</span>
         </a-table>
       </div>
       <div class="team2">
         <div class="title">team2</div>
         <a-table :columns="columns" :data-source="teamTwo" :pagination="false">
           <a slot="name" slot-scope="text, item" @click="checkPlayer(item)"><span class="name">{{ text }}</span></a>
-          <span slot="status" slot-scope="status" :style="{ color: status ? 'red' : 'rgba(0, 0, 0, 0.65)' }">{{status ? '实锤' : '无异常' }}</span>
+          <span slot="status" slot-scope="status" :style="{ color: status ? 'red' : 'rgba(0, 0, 0, 0.65)' }">{{status ? '实锤' : '' }}</span>
         </a-table>
       </div>
     </div>
@@ -61,8 +61,8 @@ export default {
       columns: [
         {
           title: 'Name',
-          dataIndex: 'name',
-          key: 'name',
+          dataIndex: 'platoonName',
+          key: 'platoonName',
           scopedSlots: { customRender: 'name' },
         },
         {
@@ -100,10 +100,10 @@ export default {
       const { showHacker, search } = this
       return [...players].map((item) => {
         const { join_time, platoon, player_id } = item
-        let name = `${platoon ? `[${platoon}]` : ''}${item.name}`
+        let platoonName = `${platoon ? `[${platoon}]` : ''}${item.name}`
         const { hh, ss } = getNowTime(join_time)
         const { hacker } = personaids[player_id] || {}
-        return { ...item, name, time: `${fillInStr(hh)}:${fillInStr(ss)}`, status: hacker}
+        return { ...item, platoonName, time: `${fillInStr(hh)}:${fillInStr(ss)}`, status: hacker}
       }).filter(item => (!search || item.name.indexOf(search) != -1) && (!showHacker || item.status))
     },
     teamTwo() {
@@ -112,10 +112,10 @@ export default {
       const { showHacker, search } = this
       return [...players].map((item) => {
         const { join_time, platoon, player_id } = item
-        let name = `${platoon ? `[${platoon}]` : ''}${item.name}`
+        let platoonName = `${platoon ? `[${platoon}]` : ''}${item.name}`
         const { hh, ss } = getNowTime(join_time)
         const { hacker } = personaids[player_id] || {}
-        return { ...item, name, time: `${fillInStr(hh)}:${fillInStr(ss)}`, status: hacker}
+        return { ...item, platoonName, time: `${fillInStr(hh)}:${fillInStr(ss)}`, status: hacker}
       }).filter(item => (!search || item.name.indexOf(search) != -1) && (!showHacker || item.status))
     },
     abnormal() {

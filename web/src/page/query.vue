@@ -213,34 +213,39 @@ export default {
         }
         switch(item.type) {
           case '突击步枪':
+            if(accuracy >= 40 || headshots >= 45) {
+              item.status = true
+            }
+            break
           case '轻机枪':
-            if(accuracy >= 35 || headshots >= 40) {
-              item.status = true
-            }
-            break
-          case '冲锋枪':
-            if(accuracy >= 35 || headshots >= 35) {
-              item.status = true
-            }
-            break
           case '固定式机枪':
-            if(accuracy >= 35 || headshots >= 30) {
+          case '冲锋枪':
+            if(accuracy >= 40 || headshots >= 42) {
               item.status = true
             }
             break
           case '半自动步枪':
-            if(accuracy >= 40 || headshots >= 40) {
+            if(accuracy >= 60 || headshots >= 55) {
               item.status = true
             }
             break
           case '单动式步枪':
+            if(accuracy >= 50 || headshots >= 90) {
+              item.status = true
+            }
+            break
           case '手动枪机卡宾枪': 
-            if(accuracy >= 60 || killsPerMinute >= 3) {
+            if(accuracy >= 60 || headshots >= 80) {
               item.status = true
             }
             break
           case '反器材步枪':
-            if(accuracy >= 60 || headshots >= 40) {
+            if(accuracy >= 50 || headshots >= 90) {
+              item.status = true
+            }
+            break
+          case '霰弹枪':
+            if(headshots >= 35) {
               item.status = true
             }
             break
@@ -274,6 +279,7 @@ export default {
     if(player_id) {
       this.search = name
       this.onSearch(name)
+      this.searchOptionValue = 'player'
     }
   }
 }
