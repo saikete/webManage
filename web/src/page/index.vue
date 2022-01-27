@@ -15,7 +15,7 @@
       <div class="version">
         <div>
           <!-- <p>开发：lin_RunRun 红旅驴与绿旅驴与驴 REBF服服主-[REBF]20-42FPS-BF </p> -->
-          <p>支持帮助：Bfban.com gametools</p>
+          <p>支持帮助：<a :href="item.link" target="_blank" v-for="item in support" :key="item.label">{{ item.label }}</a></p>
         </div>
       </div>
     </div>
@@ -24,6 +24,7 @@
 
 <script>
 import logo from '@/assets/images/logo.jpg'
+import config from '@/utils/config'
 export default {
   data() {
     return {
@@ -34,7 +35,8 @@ export default {
         { label: '举报外挂-战地联ban', router: 'https://bfban.com/#/' }
       ],
       routeAction: '',
-      logo
+      logo,
+      support: config.support
     }
   },
   methods: {
@@ -140,12 +142,15 @@ export default {
     .version {
       text-align: center;
       font-size: 13px;
-      color: rgba(52, 51, 86, .5);
+      color: #444;
       padding: 25px 0;
       display: flex;
       justify-content: center;
       >div {
         text-align: left;
+      }
+      a {
+        margin-right: 10px;
       }
     }
   }

@@ -23,19 +23,42 @@
     </div>
     <div v-if="searchOptionValue == 'player' && player.id" class="player">
       <a-card :title="playerName" class="info">
-        <p><span>等级：{{ 'lv.' + player.rank }}</span> <span>游戏时间：{{timePlayed}}</span> <span>联Ban查询结果：{{ player.statusText }}</span> <span>机器人服名单情况：</span> <span>存在异常的武器数量：{{ abnormalWeapons.length }}</span></p> 
+        <p><span>等级：{{ 'lv.' + player.rank }}</span> <span>游戏时间：{{timePlayed}}</span></p> 
         <p><span>击杀：{{ player.kills }}</span> <span>死亡：{{ player.deaths }}</span> <span>SPM：{{player.scorePerMinute}}</span> <span>kpm：{{player.killsPerMinute}}</span> <span>kd：{{player.killDeath}}</span></p> 
+        <p><span>机器人服名单情况：</span> <span>存在异常的武器数量：{{ abnormalWeapons.length }}</span></p> 
+        <p><span :class="['status' + player.status, 'bfbanStatus']">联Ban查询结果：<strong>{{ player.statusText }}</strong></span></p> 
         <a slot="extra" @click="gameReport">查看游戏记录</a>
+      </a-card>
+      <a-card title="申述教程" class="info" v-if="abnormalWeapons.length && player.status != '1'">
+        <div class="reportTip">
+          <p style="color: red">注意：你有数据异常武器，没有被添加全局白名单可能会被机器人服务器踢出</p>
+          <p>先通过下方的武器列表找到你被标记异常的武器，然后根据你自身不同的情况选择不同的申述方式</p><br />
+          <p>如果是刷枪导致了异常</p>
+          <p><a :href="`https://battlefieldtracker.com/bfv/profile/origin/${player.userName}/gamereports`" target="_blank">点击这里</a>进入到你的游戏记录页面，然后找到你的刷枪游戏记录，然后把链接保存下来</p><br />
+          <p>如果正常打打出了异常数据</p>
+          <p>
+            <a href="https://www.bilibili.com/read/cv4812329?from=search&spm_id_from=333.337.0.0" target="_blank">点击这里</a>
+            查看moss的教学，然后在打开moss的情况下录制一整局你被标异常的武器证据录像，并且数据达到了被标异常数据的水平以后。上传到任意可以随时阅览的在线视频网站。然后<a :href="`https://battlefieldtracker.com/bfv/profile/origin/${player.userName}/gamereports`" target="_blank">点击这里</a>进入你的游戏记录页面，找到这把录制的游戏记录，然后把视频的在线观看地址，moss生成的zip包，游戏记录的链接一起保存下来</p><br />
+          <p>完成以上步骤以后，加入Q群 184305984 ，把你刚刚保存的申述资料找群内管理员进行申述，申述成功以后在帮你添加全局白名单</p>
+        </div>
+      </a-card>
+      <a-card title="联ban实锤提示" class="info" v-if="player.status == '1'">
+        <div class="reportTip">
+          <p style="color: red">注意：你已经被<a style="color: red" href="https://bfban.com/#/" target="_blank">战地联ban</a>实锤，没有解除实锤状态可能会被机器人服务器踢出</p><br />
+          <p><a :href="`https://bfban.com/#/cheaters/${player.originUserId}`" target="_blank">点击这里</a>跳转到你的举报页面，查看被实锤理由</p><br />
+          <p><a href="https://docs.qq.com/doc/DVXBYQUdvelJNbGJm" target="_blank">点击这里</a>查看联ban申述示范</p><br />
+        </div>
       </a-card>
       <a-tabs default-active-key="0" @change="tabChange">
         <a-tab-pane key="0" tab="全自动武器"></a-tab-pane>
         <a-tab-pane key="1" tab="半自动武器/霰弹枪" force-render></a-tab-pane>
-        <a-tab-pane key="2" tab="狙击枪/反器材武器" force-render></a-tab-pane>
+        <a-tab-pane key="2" tab="狙击枪/反器材武器/医疗兵卡宾枪" force-render></a-tab-pane>
         <a-tab-pane key="3" tab="配备/近战" force-render></a-tab-pane>
+        <a-tab-pane key="4" tab="异常武器" force-render></a-tab-pane>
       </a-tabs>
       <a-table :columns="columns" :data-source="weaponsFilter" :pagination="false">
         <a class="name" slot="name" slot-scope="text">{{ text }}</a>
-        <span slot="status" slot-scope="status" :style="{ color: status ? 'red' : 'rgba(0, 0, 0, 0.65)' }">{{status ? '异常' : '' }}</span>
+        <span slot="status" slot-scope="status" :style="{ color: status ? 'red' : 'rgba(0, 0, 0, 0.65)' }">{{status ? '数据异常' : '' }}</span>
       </a-table>
     </div>
   </div>
@@ -88,7 +111,7 @@ export default {
           key: 'hitVKills',
         },
         {
-          title: '是否异常',
+          title: '武器数据是否异常',
           dataIndex: 'status',
           key: 'status',
           scopedSlots: { customRender: 'status' }
@@ -98,7 +121,6 @@ export default {
   },
   methods: {
     onSearch(e) {
-      console.log(e)
       switch(this.searchOptionValue) {
         case 'server':
           this.$store.dispatch('servers', { name: e }).then(res => {
@@ -109,7 +131,7 @@ export default {
           this.$store.dispatch('playersAllData', { name: e }).then(res => {
             this.player= res
             this.$store.dispatch('getCheckban', res).then(res => {
-              const { status } = res.personaids[this.player.id]
+              const { status, originUserId } = res.personaids[this.player.id]
               let statusText = '无记录'
               switch(status) {
                 case '0':
@@ -135,14 +157,13 @@ export default {
                   break
 
               }
-              this.player = { ...this.player, status, statusText }
+              this.player = { ...this.player, status, statusText, originUserId }
             })
             this.$store
           })
       }
     },
     jumpDetails(e) {
-      console.log(e)
       const { prefix, gameId } = e
       this.$router.push({
         name: 'serverDetails', query: { gameId, prefix }
@@ -153,6 +174,14 @@ export default {
     },
     gameReport() {
       window.open(`https://battlefieldtracker.com/bfv/profile/origin/${this.player.userName}/gamereports`)
+    },
+    jumpBFban() {
+      const { originUserId } = this.player
+      if(originUserId) {
+        window.open(`https://bfban.com/#/cheaters/${originUserId}`)
+      }else {
+        this.$toast('该玩家在联ban无举报记录', 1.5)
+      }
     }
   },
   computed: {
@@ -178,10 +207,6 @@ export default {
         let { accuracy, kills, headshots, killsPerMinute } = item
         accuracy = parseInt(accuracy)
         headshots = parseInt(headshots)
-        if(item.weaponName == '刘易斯机枪') {
-          console.log(headshots)
-          console.log(accuracy)
-        }
         item.status = false
         if(kills< 100) {
           return item
@@ -204,12 +229,12 @@ export default {
             }
             break
           case '半自动步枪':
-          case '手动枪机卡宾枪':
             if(accuracy >= 40 || headshots >= 40) {
               item.status = true
             }
             break
           case '单动式步枪':
+          case '手动枪机卡宾枪': 
             if(accuracy >= 60 || killsPerMinute >= 3) {
               item.status = true
             }
@@ -234,10 +259,14 @@ export default {
         ['单动式步枪', '反器材步枪'], 
         ['配备', '近战']
       ]
-      return weapons.filter(item => weaponsType[weaponType].includes(item.type)).sort((a, b) => b.kills - a.kills)
-      // .map(item => {
-      //   return { ...item, star: parseInt(item.kills / 100)}
-      // })
+      if(weaponType == '4') {
+        return weapons.filter(item => item.status)
+      }
+      const typeWeapons = weapons.filter(item => weaponsType[weaponType].includes(item.type))
+      return [
+        ...typeWeapons.filter(item => item.status), ...typeWeapons.filter(item => !item.status).sort((a, b) => {
+        return b.kills - a.kills
+      })] 
     }
   },
 }
@@ -261,6 +290,28 @@ export default {
   }
   .info {
      margin-bottom: 20px;
+  }
+  .bfbanStatus {
+    &.status1, &.status2 {
+      color: red;
+    }
+    &.status3, &.status3 {
+      color: green;
+    }
+  }
+  .bfbanJump {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+.reportTip {
+  p {
+    margin-bottom: 2px;
+    a {
+      color: #516EEC;
+      text-decoration: underline;
+      margin: auto 2px;
+    }
   }
 }
 </style>

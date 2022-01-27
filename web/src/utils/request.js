@@ -32,6 +32,7 @@ request.interceptors.response.use(response => {
   if(status >= 200 && status < 300) {
     return data
   }
+  else return response
 }, error => {
   store.dispatch('setGlobalLoading', false)
   return error

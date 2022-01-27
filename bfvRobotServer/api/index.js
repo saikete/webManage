@@ -3,6 +3,7 @@ import knex from '../mysql/index.js'
 const router = express.Router()
 import crypto from 'crypto'
 import axiosRequest from '../axios/index.js'
+import des from '../utils/crypt.js'
 
 // 初始化服务器，机器人获取code， 绑定服务器
 router.post('/initServer', async (req,res) =>{
@@ -121,13 +122,59 @@ router.post('/getServers', async (req, res) => {
 
 // 登录
 router.post('/login', async (req, res) => {
-  const { name, password } = req
+  const { name, password } = req.query
   // const resulte = await knex('server').select().where({ password }).andWhere({ name }).orWhere()
   console.log(resulte)
   res.send({
     status: 1,
     message: 'successful',
     data: { name, password }
+  })
+})
+
+// 发送服务器计分板数据
+router.post('/playersPanel', async (req, res) => {
+  const { gameid, players, token } = req.query
+  let detailedserver = await axiosRequest.detailedserver({ gameid })
+  res.send({
+    status: 0,
+    message: 'error, gameid invalid',
+  }) 
+  
+})
+
+// 服主端本地扫描计分板程序获取认证token
+router.get('/getUploadToken', async (req, res)=> {
+  const { gameid, pid } = req.query
+  let detailedserver = await axiosRequest.detailedserver({ gameid: des.decrypt(gameid) })
+  if(detailedserver.gameId) {
+    res.send({
+      status: 1,
+      message: 'successful',
+      data: des.encrypt(crypto.randomUUID())
+    })
+  }else {
+    res.send({
+      status: 0,
+      message: 'error, gameid invalid'
+    })
+  }
+})
+
+router.get('/desTest', async (req, res)=> {
+  const { txt } = req.query
+  res.send({
+    status: 1,
+    data: des.encrypt(txt)
+  })
+})
+
+router.get('/desTest1', async (req, res)=> {
+  const { txt } = req.query
+  console.log(txt)
+  res.send({
+    status: 1,
+    data: des.decrypt(txt)
   })
 })
 
