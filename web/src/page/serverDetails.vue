@@ -12,9 +12,9 @@
           <span>当前模式：{{ infor.mode }}</span> 
           <span>当前地图：{{infor.currentMap}}</span>
           <span>地区：{{infor.region}}</span>
-          <span>异常玩家：5</span>
+          <span v-if="abnormal.length" style="color: red">实锤玩家：{{abnormal.length}}</span>
+          <span v-else>无实锤玩家</span>
         </p>
-        <p>目前查询玩家列表数量暂时不稳定，查询bfban的状态暂时不开放</p>
       </div>
       <div class="allMaps">
         <a-card-grid style="width: calc(100% / 8); text-align:center; padding: 5px" :hoverable="false" v-for="(item, index) in infor.rotation" :key="index + item.mapname + item.mode">
@@ -24,19 +24,27 @@
       </div>
       <a slot="extra" @click="refresh">刷新</a>
     </a-card>
+    <div class="hackerSwitch">
+      <a-input
+        class="inputBox"
+        placeholder="请输入搜索玩家名称"
+        v-model="search"
+      />
+      <a-switch v-model="showHacker" v-if="abnormal.length" /><span v-if="abnormal.length">只显示实锤</span>
+    </div> 
     <div class="players">
       <div class="team1">
         <div class="title">team1</div>
         <a-table :columns="columns" :data-source="teamOne" :pagination="false">
-          <a class="name" slot="name, item" slot-scope="text" @click="checkPlayer(item)">{{ text }}</a>
-          <span slot="status" slot-scope="status" :style="{ color: status ? 'red' : 'rgba(0, 0, 0, 0.65)' }">{{status ? '实锤' : '' }}</span>
+          <a slot="name" slot-scope="text, item" @click="checkPlayer(item)"><span class="name">{{ text }}</span></a>
+          <span slot="status" slot-scope="status" :style="{ color: status ? 'red' : 'rgba(0, 0, 0, 0.65)' }">{{status ? '实锤' : '无异常' }}</span>
         </a-table>
       </div>
       <div class="team2">
         <div class="title">team2</div>
         <a-table :columns="columns" :data-source="teamTwo" :pagination="false">
-          <a class="name" slot="name, item" slot-scope="text" @click="checkPlayer(item)">{{ text }}</a>
-          <span slot="status" slot-scope="status" :style="{ color: status ? 'red' : 'rgba(0, 0, 0, 0.65)' }">{{status ? '实锤' : '' }}</span>
+          <a slot="name" slot-scope="text, item" @click="checkPlayer(item)"><span class="name">{{ text }}</span></a>
+          <span slot="status" slot-scope="status" :style="{ color: status ? 'red' : 'rgba(0, 0, 0, 0.65)' }">{{status ? '实锤' : '无异常' }}</span>
         </a-table>
       </div>
     </div>
@@ -74,7 +82,12 @@ export default {
         { name: 'small_RunRun', status: true, ping: '68', index: 2 }
       ],
       team: [],
-      bfbanStatus: {}
+      bfbanStatus: {
+        teamOne: {},
+        teamTwo: {}
+      },
+      showHacker: false,
+      search: ''
     }
   },
   computed: {
@@ -83,27 +96,31 @@ export default {
     },
     teamOne() {
       const  { players = [] } = this.team[0] ||{}
-      const { teamOne = [] } = this.bfbanStatus
-      return [...players].map((item, index) => {
-        const { join_time, platoon } = item
-        const platoonText = platoon ? `[${platoon}]` : ''
-        let name = `${platoonText}${item.name}`
+      const { personaids = {} } = this.bfbanStatus.teamOne
+      const { showHacker, search } = this
+      return [...players].map((item) => {
+        const { join_time, platoon, player_id } = item
+        let name = `${platoon ? `[${platoon}]` : ''}${item.name}`
         const { hh, ss } = getNowTime(join_time)
-        const { hacker } = teamOne[index] || {}
+        const { hacker } = personaids[player_id] || {}
         return { ...item, name, time: `${fillInStr(hh)}:${fillInStr(ss)}`, status: hacker}
-      })
+      }).filter(item => (!search || item.name.indexOf(search) != -1) && (!showHacker || item.status))
     },
     teamTwo() {
       const  {players = [] } = this.team[1] ||{}
-      const { teamTwo = [] } = this.bfbanStatus
-      return [...players].map((item, index) => {
-        const { join_time, platoon } = item
-        const platoonText = platoon ? `[${platoon}]` : ''
-        let name = `${platoonText}${item.name}`
+      const { personaids = {} } = this.bfbanStatus.teamTwo
+      const { showHacker, search } = this
+      return [...players].map((item) => {
+        const { join_time, platoon, player_id } = item
+        let name = `${platoon ? `[${platoon}]` : ''}${item.name}`
         const { hh, ss } = getNowTime(join_time)
-        const { status } = teamTwo[index] || {}
+        const { hacker } = personaids[player_id] || {}
         return { ...item, name, time: `${fillInStr(hh)}:${fillInStr(ss)}`, status: hacker}
-      })
+      }).filter(item => (!search || item.name.indexOf(search) != -1) && (!showHacker || item.status))
+    },
+    abnormal() {
+      const { teamOne, teamTwo } = this
+      return [...teamOne.filter(item => item.status), ...teamTwo.filter(item => item.status)]
     }
   },
   methods: {
@@ -113,12 +130,10 @@ export default {
         console.log(res)
         this.team = res.teams
         const [teamOne = {}, teamTwo = {}] = res.teams
-        this.$store.dispatch('checkban', teamOne.players.map(item => ({ personaId: item.player_id }))).then(res => {
-          console.log(res)
+        this.$store.dispatch('getCheckban', { id: teamOne.players.map(item => item.player_id).join(',')}).then(res => {
           this.bfbanStatus.teamOne = res
         })
-        this.$store.dispatch('checkban', teamTwo.players.map(item => ({ personaId: item.player_id }))).then(res => {
-          console.log(res)
+        this.$store.dispatch('getCheckban', { id: teamTwo.players.map(item => item.player_id).join(',')}).then(res => {
           this.bfbanStatus.teamTwo = res
         })
       })
@@ -128,16 +143,21 @@ export default {
       })
     },
     checkPlayer(e) {
-      console.log(e)
+      this.$router.push({ name: 'query', query: e })
     }
   },
   created() {
     const { prefix } = this.$route.query
     this.prefix = prefix
     this.refresh()
-    const { year, month, day, hh, mm } = getNowTime(1642233840445031)
-    console.log({ year, month, day, hh, mm })
   },
+  activated() {
+    const { prefix } = this.$route.query
+    if(prefix != this.prefix) {
+      this.prefix = prefix
+      this.refresh()
+    }
+  }
 }
 </script>
 
@@ -165,6 +185,19 @@ export default {
     .name {
       color: #1890ff;
       text-decoration: underline;
+    }
+  }
+  .hackerSwitch {
+    .inputBox {
+      width: 50%;
+      margin-right: 10px;
+    }
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    span {
+      margin-left: 10px;
     }
   }
 }

@@ -269,6 +269,13 @@ export default {
       })] 
     }
   },
+  activated() {
+    const { name, player_id } = this.$route.query
+    if(player_id) {
+      this.search = name
+      this.onSearch(name)
+    }
+  }
 }
 </script>
 

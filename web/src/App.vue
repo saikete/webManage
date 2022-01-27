@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <keep-alive><router-view></router-view></keep-alive>
     <div class="loding" v-if="$store.getters.globalLoading">
       <a-spin />
     </div>

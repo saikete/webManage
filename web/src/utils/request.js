@@ -1,14 +1,12 @@
 import axios from 'axios'    
 
 // 全局操作
-import router from '../router'
+// import router from '../router'
 import store from '../store'
 
 
-import apiConfig from './config'
-const { robotServer: { https, bash } } = apiConfig
-const http = https ? 'https' : 'http'
-
+// import apiConfig from './config'
+// const { robotServer: { https, bash } } = apiConfig
 const request = axios.create({    //创建axios实例，在这里可以设置请求的默认配置
   timeout: 10000, // 设置超时时间10s
   // baseURL: `${http}://${bash}`  //根据自己配置的反向代理去设置不同环境的baeUrl
@@ -32,7 +30,6 @@ request.interceptors.response.use(response => {
   if(status >= 200 && status < 300) {
     return data
   }
-  else return response
 }, error => {
   store.dispatch('setGlobalLoading', false)
   return error
