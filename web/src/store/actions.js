@@ -34,6 +34,10 @@ const actions = {
       }
       return res
     })
+  },
+  btrGameReport({ commit }, { name = '', paginationToken = '' }) {
+    const str = paginationToken ? `?paginationToken=${paginationToken}` : ''
+    return request.get(`${apiConfig.btr.url}v1/bfv/gamereports/origin/latest/${name}${str}`)
   }
 }
  

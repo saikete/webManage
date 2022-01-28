@@ -24,18 +24,23 @@ export const getNowTime = (d) => {
   const year = date.getFullYear()
   const month = date.getMonth() + 1
   const monthDays = new Date(year, month, 0).getDate()
+  const mm = date.getMinutes()
+  const hh = date.getHours()
+  const ss = date.getSeconds()
   return {
     year,
     month,
     day: date.getDate(),
     week: date.getDay(),
-    mm: date.getMinutes(),
-    hh: date.getHours(),
-    ss: date.getSeconds(),
+    mm,
+    hh,
+    ss,
     monthDays,
     weekText: week[date.getDay()],
     date,
-    timeStamp: +date
+    timeStamp: +date,
+    ymd: `${year}-${month}-${date.getDate()}`,
+    ymd_hms: `${year}-${month}-${date.getDate()} ${hh}:${mm}:${ss}`
   }
 }
 

@@ -22,6 +22,9 @@ import ui from './components/ui'
 Vue.use(ui)
 Vue.use(Antd);
 
+import VueClipboard from 'vue-clipboard2'
+Vue.use(VueClipboard)
+
 new Vue({
   router,
   store,

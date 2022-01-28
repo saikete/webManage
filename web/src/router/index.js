@@ -33,6 +33,10 @@ const router =  new Router({
         name: 'serverManage',
         component:  () => import('@/page/serverManage.vue'),
         meta: { login: true }
+      }, {
+        path: 'gameReport',
+        name: 'gameReport',
+        component:  () => import('@/page/gameReport.vue')
       }]
     },
     {

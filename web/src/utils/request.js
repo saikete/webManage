@@ -32,7 +32,7 @@ request.interceptors.response.use(response => {
   }
 }, error => {
   store.dispatch('setGlobalLoading', false)
-  return error
+  throw error
 })
 
 export default request

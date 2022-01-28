@@ -5,6 +5,7 @@ const http = VUE_APP_URL_HTTPS === 'true' ? 'https' : 'http'
 module.exports = {
   // 静态文件路径
   publicPath: '/' + VUE_APP_ROUTE,
+  // publicPath: './',
   lintOnSave: false,
   productionSourceMap: false,
   devServer: {
