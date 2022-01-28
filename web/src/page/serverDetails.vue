@@ -155,6 +155,12 @@ export default {
     const { prefix } = this.$route.query
     if(prefix != this.prefix) {
       this.prefix = prefix
+      this.bfbanStatus = {
+        teamOne: {},
+        teamTwo: {}
+      }
+      this.team = []
+      this.infor = {}
       this.refresh()
     }
   }
