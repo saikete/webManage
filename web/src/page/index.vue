@@ -31,7 +31,7 @@ export default {
       nav: [
         { label: '主页', router: 'home' },
         { label: '查询', router: 'query' },
-        { label: '机器人服务器管理', router: 'serverManage' },
+        { label: '机器人服务器管理', router: 'serverManage', disabled: true },
         { label: '举报外挂-战地联ban', router: 'https://bfban.com/#/' }
       ],
       routeAction: '',
@@ -41,12 +41,12 @@ export default {
   },
   methods: {
     link(item) {
-      const { router, label } = item
+      const { router, label, disabled } = item
       if( label == '举报外挂-战地联ban') {
         window.open(router)
         return
       }
-      if(router) {
+      if(router && !disabled) {
         const { name }= this.$route
         if(name == router) return
         this.routeAction = router

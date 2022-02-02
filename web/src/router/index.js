@@ -14,7 +14,7 @@ const router =  new Router({
       path: '',
       name: 'index',
       component:  () => import('@/page/index'),
-      redirect: 'query',
+      redirect: 'home',
       children: [{
         path: 'home',
         name: 'home',
