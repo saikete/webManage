@@ -1,38 +1,48 @@
 <template>
   <div class="home">
     <div class="left">
-      <div class="item">
-        <h5>机器人说明</h5>
-        <div>
-          <p>机器人免费对外提供</p>
-          <p>如果想要引入机器人到你的服务器请加群获取更多信息</p>
-          <p>如果有误踢需要申述请加群获取更多信息</p>
-          <P>目前已经有高仿机器人服务器，请加群检验你加入的机器人服务器是否经过认证</P>
-          <p>qq 群号：623359058</p>
-        </div>
+      <div class="video">
+        <iframe class="video" src="//player.bilibili.com/player.html?aid=935287732&bvid=BV1vM4y1F7ZW&cid=474413863&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
       </div>
-      <div class="item">
-        <h5>机器人相关教程</h5>
+      <div class="explanation">
+        <a-card title="相关说明">
+          <p>机器人免费提供，自助引入。私聊你付费教学属于骗子</p>
+          <p>如果想要引入机器人到你的服务器请加群</p>
+          <p>如果有误踢需要申述请到对应服务器的qq群获取更多信息</p>
+          <P>目前已经有高仿机器人服务器，请加群检验你加入的机器人服务器是否经过认证</P>
+          <a slot="extra" style="color: #1890ff;" @click="jumpGroup">QQ群号：184305984</a>
+        </a-card>
+      </div>
+    </div>
+    <div class="right">
+      <a-tabs v-model="tabAction">
+        <a-tab-pane :key="item.key" :tab="item.tab" v-for="item in homeTabs"></a-tab-pane>
+      </a-tabs>
+      <div class="update" v-show="tabAction == 'update'">
+        <a-collapse accordion defaultActiveKey="0">
+          <a-collapse-panel :header="item.title" v-for="(item, index) in log" :key="index">
+            <div class="content">
+              <div v-for="(item, index) in item.content" :key="item">{{index + 1}}. {{item}}</div>
+            </div>
+          </a-collapse-panel>
+        </a-collapse>
+      </div>
+      <div class="help" v-show="tabAction == 'help'">
         <div v-for="(item, index) in explain" :key="item.title"> 
           <p>{{index +1 }}. {{item.title}}</p>
           <a :href="item.link" target="blank" v-for="item in item.content" :key="item.link">{{item.content}}</a>
         </div>
       </div>
-      <div class="item">
-        <h5>内测服主</h5>
-        <div> 
-          感谢以下人员提供的帮助(按字母排序，不分先后)：fang2021 Mage99999 墨雨 Lin_RunRun yingdaomayi122 XiaoPeng_No1（陆续添加）
-        </div>
+      <div class="bulletin" v-show="tabAction == 'bulletin'">
+        暂无公告
       </div>
-    </div>
-    <div class="right">
-      <p style="margin-bottom: 10px">更新日志</p>
-      <div class="item">
-        <div v-for="(item, index) in log" :key="index">
-          <p class="title" v-if="item.title">{{item.title}}</p>
-          <p v-for="item in item.content" :key="item">{{ item }}</p>
-        </div>
-        .....
+      <div class="party" v-show="tabAction == 'party'">
+        <a-collapse accordion defaultActiveKey="0">
+          <a-collapse-panel header="2022春节娱乐赛" key="0">
+            <p>比赛说明在线链接</p>
+            <a href="https://mubu.com/doc/7ko8ZHAwcEz" target="blank">https://mubu.com/doc/7ko8ZHAwcEz</a>
+          </a-collapse-panel>
+        </a-collapse>
       </div>
     </div>
   </div>
@@ -43,7 +53,28 @@ import home from './homeConfig.js'
 export default {
   data() {
     return {
-      ...home
+      ...home,
+      homeTabs: [{
+        tab: '重要更新日志',
+        key: 'update'
+      }, {
+        tab: '视频和文档',
+        key: 'help'
+      }, {
+        tab: '公告',
+        key: 'bulletin'
+      }, 
+      {
+        tab: '活动',
+        key: 'party'
+      }
+      ],
+      tabAction: 'update'
+    }
+  },
+  methods: {
+    jumpGroup() {
+      window.open(`https://jq.qq.com/?_wv=1027&k=e75oLrJQ`)
     }
   }
 }
@@ -57,42 +88,25 @@ export default {
     flex: 1;
   }
   .left {
-    .item {
-      margin-bottom: 30px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-      padding: 10px;
-      h5 {
-        margin-bottom: 5px;
-      }
-      >div {
+    .video {
+      margin-bottom: 20px;
+      .title {
+        font-size: 16px;
         margin-bottom: 10px;
-        p {
-          margin-bottom: 5px;
-          &:last-child {
-            margin-bottom: 0;
-          }
-        }
-        a {
-          margin-right: 30px;
-        }
+      }
+      >iframe {
+        width: 100%;
+        height: 500px;
       }
     }
   }
   .right {
     margin-left: 50px;
-    .item {
-      margin-bottom: 30px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-      padding: 10px;
-      max-height: 60vh;
-      overflow: auto;
+    .help {
       >div {
-        margin-bottom: 15px;
-        .title {
-          margin-bottom: 3px;
-        }
-        p {
-          margin-bottom: 5px;
+        margin-bottom: 10px;
+        a {
+          margin-right: 10px;
         }
       }
     }

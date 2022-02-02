@@ -127,7 +127,6 @@ export default {
     refresh() {
       const { gameId } = this.$route.query
       this.$store.dispatch('players', { gameid: gameId }).then(res => {
-        console.log(res)
         this.team = res.teams
         const [teamOne = {}, teamTwo = {}] = res.teams
         this.$store.dispatch('getCheckban', { id: teamOne.players.map(item => item.player_id).join(',')}).then(res => {
@@ -138,7 +137,6 @@ export default {
         })
       })
       this.$store.dispatch('detailedserver', { gameid: gameId }).then(res => {
-        console.log(res)
         this.infor = res
       })
     },

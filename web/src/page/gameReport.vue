@@ -116,7 +116,6 @@ export default {
       }) 
     },
     onChange(e, dateString) {
-      console.log(+e._d)
       this.searchDate = +e._d
     },
     checkPlayer(e) {
