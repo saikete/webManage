@@ -16,7 +16,8 @@
     "vue": "^2.6.11",
     "vue-clipboard2": "^0.3.3",
     "vue-router": "^3.4.9",
-    "vuex": "^3.5.1"
+    "vuex": "^3.5.1",
+    "wangeditor": "^4.7.11"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
