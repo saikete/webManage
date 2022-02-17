@@ -136,9 +136,12 @@
       </a-card>
       <a-modal
         v-model="visible"
-        title="Basic Modal"
+        title="提交举报"
         :forceRender="true"
+        :width="1000"
         @ok="handleOk"
+        okText="确定"
+        cancelText="取消"
       >
         <div id="editor"></div>
       </a-modal>
@@ -231,15 +234,7 @@ export default {
       visible: false,
     };
   },
-  mounted() {
-    // const editor = new E("#editor");
-    // const editor = new E(document.getElementById("editor"));
-    // console.log(editor);
-    // 设置编辑区域高度为 500px
-    // editor.config.height = 500;
-    // 注意，先配置 height ，再执行 create()
-    // editor.create();
-  },
+  mounted() {},
   methods: {
     onSearch(e) {
       switch (this.searchOptionValue) {
@@ -319,6 +314,7 @@ export default {
       console.log(editor);
       // 设置编辑区域高度为 500px
       editor.config.height = 500;
+      // editor.config.width
       // 注意，先配置 height ，再执行 create()
       editor.create();
       console.log(document.getElementById("editor"));
